@@ -1,16 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
   Text,
-  Button,
-  TextInput,
   Image,
-  ActivityIndicator,
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { color } from 'react-native-reanimated';
+
 import * as Font from 'expo-font';
 import { ScrollView } from 'react-native-gesture-handler';
 import HeroImage from '../../assets/tutorials/part_1/part_1_hero_image.svg';
@@ -18,8 +15,6 @@ import AngleImage from '../../assets/tutorials/part_1/part_1_angle_of_plant.svg'
 import ImageSVG from '../../assets/tutorials/part_1/part_1_middle_of_plant_tutorial.svg';
 import PlantDistance from '../../assets/tutorials/part_1/part_1_plant_distance.svg';
 // import PlantDistance from '../../assets/tutorials/part_1/d.svg';
-
-import { auth } from 'firebase';
 
 function Step1({ navigation }) {
   const [fontLoading, loadFont] = useState(false);

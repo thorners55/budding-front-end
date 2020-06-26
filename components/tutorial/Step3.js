@@ -1,16 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
   Text,
-  Button,
-  TextInput,
-  Image,
-  ActivityIndicator,
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { color } from 'react-native-reanimated';
 import * as Font from 'expo-font';
 import { ScrollView } from 'react-native-gesture-handler';
 import PotHeightSVG from '../../assets/tutorials/part_2/pot_measure_2.svg';

@@ -6,13 +6,9 @@ import {
   Text,
   Image,
   StyleSheet,
-  TextInput,
   ScrollView,
-  Button,
   TouchableOpacity,
-  SafeAreaView,
   Dimensions,
-  Alert,
 } from 'react-native';
 import * as api from '../../api-requests/api';
 import TimeAgo from 'react-native-timeago';

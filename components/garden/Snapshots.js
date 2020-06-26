@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert,
   View,
@@ -7,7 +7,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { getDayMonth } from '../../utils/utils';

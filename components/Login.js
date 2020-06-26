@@ -12,8 +12,6 @@ import {
 } from 'react-native';
 import * as api from '../api-requests/api';
 import * as Font from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { Asset } from 'expo-asset';
 import LoadingGif from './LoadingGif';
 
 const Login = (props) => {

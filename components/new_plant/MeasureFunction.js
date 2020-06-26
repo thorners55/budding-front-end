@@ -6,15 +6,11 @@ import {
   PanResponder,
   Text,
   Image,
-  Button,
   TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
   Alert,
 } from 'react-native';
 
 import * as ImageManipulator from 'expo-image-manipulator';
-import { set } from 'react-native-reanimated';
 import * as api from '../../api-requests/api';
 const { options } = require('../../s3-config.js');
 const shortid = require('shortid');

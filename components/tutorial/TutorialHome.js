@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Button,
-  TextInput,
-  ActivityIndicator,
-} from 'react-native';
-import NewPlantHome from '../new_plant/NewPlantHome';
+import { View, Text, Button } from 'react-native';
 
 function TutorialHome({ navigation }) {
   return (

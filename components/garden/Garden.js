@@ -1,16 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import {
-  Animated,
   View,
   StyleSheet,
-  PanResponder,
   Text,
   Image,
-  Button,
   SafeAreaView,
   TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
   Alert,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
@@ -233,7 +228,7 @@ function Garden({ userId, navigation }) {
                     </TouchableOpacity>
 
                     <Text style={styles.plant_stats}>
-                      <>planted: </>
+                      <>posted: </>
                       <TimeAgo
                         time={item.created_at}
                         style={styles.plant_stats_value}

@@ -1,17 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Animated,
   View,
   StyleSheet,
-  PanResponder,
   Text,
-  Image,
-  Button,
   TextInput,
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Pot from '../../assets/pot_measure.svg';
 import PotHeightSVG from '../../assets/tutorials/part_2/pot_measure.svg';
 import LoopingInputLine from '../../utils/animations/LoopingInputLine';
 import Arrow from '../../utils/animations/Arrow';

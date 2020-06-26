@@ -1,19 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Animated,
   View,
   StyleSheet,
-  PanResponder,
   Text,
   Image,
-  Button,
   TouchableOpacity,
   Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 // import * as Sharing from 'expo-sharing';
 import uploadToAnonymousFilesAsync from 'anonymous-files';
-import logo from '../../assets/logo.png';
 
 function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
   const [selectedImage, setSelectedImage] = React.useState(null);

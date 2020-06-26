@@ -1,16 +1,5 @@
-import React, { useRef, useState } from 'react';
-import {
-  Animated,
-  View,
-  StyleSheet,
-  PanResponder,
-  Text,
-  Image,
-  Button,
-  TouchableOpacity,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 
 // navigation
 
