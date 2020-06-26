@@ -21,7 +21,6 @@ import LoadingGif from '../LoadingGif';
 
 function Snapshots(props) {
   const { snapshots, plant_name, plant_id, potHeight } = props.route.params;
-  console.log(props.route.params);
   const { navigation } = props;
   const [loading, isLoading] = useState(true);
   const [fontLoading, loadFont] = useState(true);

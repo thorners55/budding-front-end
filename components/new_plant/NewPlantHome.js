@@ -17,8 +17,6 @@ function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
   const [potHeight, setPotHeight] = useState(pot_height);
   const [plantId, setPlantId] = useState(plant_id);
 
-  console.log(pot_height, userId, plantId, '<===');
-
   // pass pot height down as a prop, set this as state, and have in input box when loads
 
   // new snapshot button --> new plant page (take new photo, choose from library etc) --> back to individual plant page

@@ -75,9 +75,7 @@ function NewPlantEntry({ route, navigation }) {
           return RNS3.put(file, options);
         })
         .then((response) => {
-          console.log('status: ', response.status);
           if (response.status === 201) {
-            console.log('body: ', response.body);
             const { postResponse } = response.body;
             return postResponse;
           } else {
@@ -88,11 +86,9 @@ function NewPlantEntry({ route, navigation }) {
           }
         })
         .then((postResponse) => {
-          console.log('after s3 upload', postResponse);
           return api.postSnapshot(plantId, postResponse.location, plantHeight);
         })
         .then(() => {
-          console.log('before navigation');
           isLoading(false);
           setPlantName('');
           setType(null);

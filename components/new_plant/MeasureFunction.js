@@ -30,9 +30,6 @@ function MeasureFunction({ route, navigation }) {
   const [plantHeight, setPlantHeight] = useState(null);
   const [loading, isLoading] = useState(true);
 
-  console.log(userId, '<--- top of measure func');
-  console.log(plantId, '<--- top of meaure func plantId');
-
   const name = shortid.generate();
   const file = {
     uri: resizedImage,
@@ -85,17 +82,12 @@ function MeasureFunction({ route, navigation }) {
       const unit = (bottomPotClick - topPotClick) / potHeight;
       let plantHeight = (topPotClick - topPlantClick) / unit;
       height.current = plantHeight.toFixed(1);
-      console.log(bottomPotClick, topPotClick, topPlantClick);
-      // plantHeight = plantHeight * (1 + 0.15)
-
-      // console.log(bottomPotClick, topPotClick, topPlantClick);
       console.log(plantHeight + 'CM  ----PLANT HEIGHT');
     }).then(navNextPage());
   };
 
   const navNextPage = () => {
     isLoading(true);
-    console.log(plantId, '<--- measure func!');
     // if there's a plantId, send a patch request, then navigate to individual plant page
     // if not, go to new plant entry
     // NEED TO SEND PHOTO TO S3
@@ -112,20 +104,14 @@ function MeasureFunction({ route, navigation }) {
           null,
           potHeight,
         )
-        .then((response) => {
-          console.log(response, '<--- after patch request');
-        })
         .then(() => {
           return RNS3.put(file, options);
         })
         .then((response) => {
-          console.log(plantId, resizedImage, height.current);
           // if response is good, do post snapshot
           // if not, alert an error
           if (response.status === 201) {
-            console.log('body: ', response.body);
             const { location } = response.body.postResponse;
-            console.log(location);
             return api.postSnapshot(plantId, location, height.current);
           } else {
             // stays on measure function page if there is an error and gives an alert
@@ -135,7 +121,6 @@ function MeasureFunction({ route, navigation }) {
           }
         })
         .then((response) => {
-          console.log(response, '<--- after post request');
           Alert.alert('Successful', 'Snapshot added!');
           isLoading(false);
           navigation.push('garden');
@@ -147,7 +132,6 @@ function MeasureFunction({ route, navigation }) {
         });
     } else {
       isLoading(false);
-      console.log(userId, '<--- inside measure func');
       navigation.navigate('new plant entry', {
         resizedImage,
         potHeight,

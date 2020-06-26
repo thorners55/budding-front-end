@@ -39,8 +39,6 @@ function PlantPage(props) {
     pot_height,
   } = props.route.params.item;
 
-  console.log(pot_height, '<--- plant page');
-
   const [plant, addPlantData] = useState([]);
   const [snapshots, addSnapshotData] = useState(undefined);
   const [loading, isLoading] = useState(true);

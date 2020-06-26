@@ -14,10 +14,8 @@ function PlantOptionsNavigator({ userId, plant_id, pot_height, route }) {
   let potHeight;
   let user_id;
 
-  console.log(route);
   if (route.params) {
     if (!route.params.params) {
-      console.log('here');
     } else {
       if (route.params.params.plant_id) {
         potHeight = route.params.params.pot_height;
@@ -26,8 +24,8 @@ function PlantOptionsNavigator({ userId, plant_id, pot_height, route }) {
     }
   }
   if (plant_id) {
-    console.log('in if');
     const { plant_id, pot_height } = route.params;
+    // does this do anything?
   }
   if (userId) {
     user_id = userId;
