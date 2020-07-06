@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   View,
@@ -14,7 +14,6 @@ import { FlatGrid } from 'react-native-super-grid';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import GlobalStyles from '../../styles/GlobalStyles';
 import TimeAgo from 'react-native-timeago';
-import * as Font from 'expo-font';
 import * as api from '../../api-requests/api';
 import { Entypo } from '@expo/vector-icons';
 import LoadingGif from '../LoadingGif';
@@ -23,15 +22,7 @@ function Snapshots(props) {
   const { snapshots, plant_name, plant_id, potHeight } = props.route.params;
   const { navigation } = props;
   const [loading, isLoading] = useState(true);
-  const [fontLoading, loadFont] = useState(true);
 
-  useEffect(() => {
-    Font.loadAsync({
-      arciform: require('../../assets/fonts/Arciform.otf'),
-    }).then(loadFont(false));
-  }, []);
-
-  let ScreenHeight = Dimensions.get('window').height;
   let ScreenWidth = Dimensions.get('window').width * 0.915;
 
   const allDays = snapshots.map((snapshot) => {
@@ -47,6 +38,7 @@ function Snapshots(props) {
       style={[GlobalStyles.droidSafeArea, { flex: 1, paddingBottom: 0 }]}
     >
       <View style={styles.container}>
+        {loading && <LoadingGif />}
         <FlatGrid
           itemDimension={130}
           data={snapshots}
@@ -54,8 +46,6 @@ function Snapshots(props) {
           spacing={10}
           ListHeaderComponent={
             <>
-              {loading && <LoadingGif />}
-
               {snapshots.length === 1 && (
                 <View style={styles.background_plate_blank}>
                   <Text style={styles.header_name}>{plant_name}</Text>
@@ -77,7 +67,6 @@ function Snapshots(props) {
               )}
 
               {snapshots.length > 1 && (
-                // <View style={{backgroundColor: '#52875a', marginLeft: 10, marginRight: 10, height: 250}}>
                 <View style={styles.background_plate}>
                   <View style={styles.header}>
                     <Text style={styles.header_name}>{plant_name}</Text>
@@ -95,45 +84,15 @@ function Snapshots(props) {
                           },
                         ],
                       }}
-                      width={ScreenWidth} // from react-native
+                      width={ScreenWidth}
                       height={220}
-                      yAxisSuffix="cm"
-                      yAxisInterval={1} // optional, defaults to 1
-                      chartConfig={{
-                        backgroundColor: '#e26a00',
-                        backgroundGradientFrom: '#52875a',
-                        backgroundGradientTo: '#52875a',
-                        backgroundGradientFromOpacity: 1,
-                        backgroundGradientToOpacity: 1,
-                        decimalPlaces: 1, // optional, defaults to 2dp
-                        color: (opacity = 0) =>
-                          `rgba(255, 255, 255, ${opacity})`,
-                        labelColor: (opacity) =>
-                          `rgba(255, 255, 255, ${opacity})`,
-                        style: {
-                          // borderRadius: 16,
-                          // marginRight: 10,
-                          borderBottomRightRadius: 10,
-                          borderBottomLeftRadius: 10,
-                        },
-                        propsForDots: {
-                          r: '4',
-                          strokeWidth: '5',
-                          color: '#fdbe39',
-                        },
-                      }}
-                      bezier
-                      style={{
-                        paddingVertical: 15,
-                        backgroundColor: '#52875a',
-                        //  paddingHorizontal: 0,
-                        // padding: 10,
-                        // borderRadius: 15,
-                      }}
+                      yAxisSuffix=" cm"
+                      chartConfig={chart_config}
+                      bezier // shows chart lines as curve
+                      style={styles.chart_border}
                     />
                   </View>
                 </View>
-                // </View>
               )}
               <Text style={styles.header_snapshots}>snapshots</Text>
             </>
@@ -154,10 +113,9 @@ function Snapshots(props) {
                 </Text>
 
                 <View style={styles.height_details}>
-                  {/* <PlantHeightIcon width={25} height={25} fill="green" /> */}
                   <Text style={styles.height_pre_text}>
                     plant height:{' '}
-                    <Text style={styles.height_text}>{item.height}</Text>
+                    <Text style={styles.height_text}>{item.height} cm</Text>
                   </Text>
                 </View>
               </View>
@@ -210,6 +168,26 @@ function Snapshots(props) {
     </SafeAreaView>
   );
 }
+
+const chart_config = {
+  backgroundColor: '#e26a00',
+  backgroundGradientFrom: '#52875a',
+  backgroundGradientTo: '#52875a',
+  backgroundGradientFromOpacity: 1,
+  backgroundGradientToOpacity: 1,
+  decimalPlaces: 1,
+  color: (opacity = 0) => `rgba(255, 255, 255, ${opacity})`,
+  labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+  style: {
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  propsForDots: {
+    r: '4',
+    strokeWidth: '5',
+    color: '#fdbe39',
+  },
+};
 
 const styles = StyleSheet.create({
   header: {
@@ -276,13 +254,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#355a3a',
     fontWeight: 'bold',
-    // paddingLeft: '5%',
   },
   height_pre_text: {
     fontWeight: '400',
     fontSize: 12,
     color: '#52875a',
-    // paddingLeft: '5%',
   },
   plant_container: {
     justifyContent: 'flex-end',
@@ -336,16 +312,7 @@ const styles = StyleSheet.create({
     paddingRight: '5%',
     marginTop: 25,
   },
-  delete_button_text: {
-    fontSize: 20,
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
   plant_info_view: {
-    // marginBottom: 25,s
-    // paddingLeft: '8%',
-    // paddingRight: 10,
     backgroundColor: 'green',
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -371,6 +338,10 @@ const styles = StyleSheet.create({
   add_snaps: {
     fontSize: 20,
     color: '#52875a',
+  },
+  chart_border: {
+    paddingVertical: 15,
+    backgroundColor: '#52875a',
   },
 });
 

@@ -4,7 +4,6 @@ import Garden from './Garden';
 import PlantPage from './PlantPage';
 import EditPlant from './EditPlant';
 import Snapshots from './Snapshots';
-import Test from './Test';
 import PlantOptionsNavigator from '../new_plant/PlantOptionsNavigator';
 
 const Stack = createStackNavigator();
@@ -64,8 +63,6 @@ function GardenNavigator({ userId, plant_id, from, route }) {
           />
         )}
       </Stack.Screen>
-
-      <Stack.Screen name="test page" component={Test} />
     </Stack.Navigator>
   );
 }

@@ -28,14 +28,11 @@ import LoadingGif from '../LoadingGif';
 function PlantPage(props) {
   const { deletingPlant } = props.route.params;
   const { navigation } = props;
-
   const {
     plant_id,
     plant_uri,
     height,
     plant_name,
-    snapshot_count,
-    created_at,
     pot_height,
   } = props.route.params.item;
 
@@ -68,13 +65,11 @@ function PlantPage(props) {
         <View>
           <View style={styles.container}>
             <Image
-              // onLoad={() => isLoading(false)}
               onLoadEnd={() => isLoading(false)}
               source={{
                 uri: plant_uri,
               }}
               style={styles.image}
-              //   onLoad={isLoading(false)}
             />
           </View>
           <View style={styles.background_plate}>
@@ -97,12 +92,15 @@ function PlantPage(props) {
               <View style={styles.plant_info_left_view}>
                 <View style={styles.plant_info_card}>
                   <PlantHeightIcon width={30} height={30} fill="green" />
-                  <Text style={styles.plant_info_text}>height: {height}cm</Text>
+                  <Text style={styles.plant_info_text}>
+                    height:{'\n'}
+                    {height}cm
+                  </Text>
                 </View>
                 <View style={styles.plant_info_card}>
                   <CreatedAtIcon width={30} height={30} fill="green" />
                   <Text style={styles.plant_info_text}>
-                    posted:
+                    posted:{'\n'}
                     <TimeAgo
                       time={plant.created_at}
                       style={styles.plant_info_text}
@@ -111,13 +109,17 @@ function PlantPage(props) {
                 </View>
                 <View style={styles.plant_info_card}>
                   <SoilIcon width={30} height={30} fill="green" />
-                  <Text style={styles.plant_info_text}>soil: {plant.soil}</Text>
+                  <Text style={styles.plant_info_text}>
+                    soil:{'\n'}
+                    {plant.soil}
+                  </Text>
                 </View>
                 <View style={styles.plant_info_card}>
                   <SunIcon width={30} height={30} fill="green" />
 
                   <Text style={styles.plant_info_text}>
-                    sunlight: {plant.sunlight}
+                    sunlight:{'\n'}
+                    {plant.sunlight}
                   </Text>
                 </View>
               </View>
@@ -125,27 +127,31 @@ function PlantPage(props) {
                 <View style={styles.plant_info_card}>
                   <PlantTypeIcon width={30} height={30} fill="green" />
                   <Text style={styles.plant_info_text}>
-                    type: {plant.plant_type}
+                    type:{'\n'}
+                    {plant.plant_type}
                   </Text>
                 </View>
                 <View style={styles.plant_info_card}>
                   <WaterIcon width={30} height={30} fill="green" />
                   <Text style={styles.plant_info_text}>
-                    water: {plant.watering_freq}
+                    water:{'\n'}
+                    {plant.watering_freq}
                   </Text>
                 </View>
                 <View style={styles.plant_info_card}>
                   <LocationIcon width={30} height={30} fill="green" />
 
                   <Text style={styles.plant_info_text}>
-                    location: {plant.location}
+                    location:{'\n'}
+                    {plant.location}
                   </Text>
                 </View>
                 <View style={styles.plant_info_card}>
                   <PotHeightIcon width={30} height={30} fill="green" />
 
                   <Text style={styles.plant_info_text}>
-                    pot height: {plant.pot_height} cm
+                    pot height:{'\n'}
+                    {plant.pot_height} cm
                   </Text>
                 </View>
               </View>
@@ -222,7 +228,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 15,
     fontSize: 40,
-    //fontWeight: 'bold',
     color: '#355a3a',
     fontFamily: 'arciform',
   },
@@ -233,16 +238,10 @@ const styles = StyleSheet.create({
     color: '#52875a',
     fontFamily: 'arciform',
   },
-  timeago_text: {
-    textAlign: 'center',
-    marginBottom: 10,
-    fontSize: 15,
-    color: 'gray',
-  },
   plant_info_view: {
     paddingTop: 20,
-    paddingLeft: '8%',
-    paddingRight: 10,
+    // paddingLeft: '8%',
+    //paddingRight: 10,
     flexDirection: 'row',
     backgroundColor: 'white',
   },
@@ -265,7 +264,7 @@ const styles = StyleSheet.create({
   plant_info_text: {
     fontSize: 15,
     marginLeft: 10,
-    paddingRight: 40,
+    paddingRight: 30,
   },
   button: {
     backgroundColor: '#fdbe39',
@@ -278,10 +277,8 @@ const styles = StyleSheet.create({
     height: 45,
   },
   delete_button: {
-    // backgroundColor: '#fdbe39',
     borderRadius: 5,
     marginBottom: 15,
-    // marginTop: 15,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '70%',
