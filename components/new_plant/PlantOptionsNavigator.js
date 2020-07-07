@@ -9,7 +9,7 @@ import TutorialNavigator from '../tutorial/TutorialNavigator';
 
 const Stack = createStackNavigator();
 
-function PlantOptionsNavigator({ userId, plant_id, pot_height, route }) {
+function PlantOptionsNavigator({ userId, pot_height, route }) {
   let plantId;
   let potHeight;
   let user_id;
@@ -23,10 +23,7 @@ function PlantOptionsNavigator({ userId, plant_id, pot_height, route }) {
       }
     }
   }
-  if (plant_id) {
-    const { plant_id, pot_height } = route.params;
-    // does this do anything?
-  }
+
   if (userId) {
     user_id = userId;
   }

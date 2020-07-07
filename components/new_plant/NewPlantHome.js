@@ -8,17 +8,14 @@ import {
   Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-// import * as Sharing from 'expo-sharing';
 import uploadToAnonymousFilesAsync from 'anonymous-files';
 
 function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
-  const [selectedImage, setSelectedImage] = React.useState(null);
   const [imagePickerSelected, setPickerSelected] = React.useState(true);
   const [potHeight, setPotHeight] = useState(pot_height);
   const [plantId, setPlantId] = useState(plant_id);
 
-  // pass pot height down as a prop, set this as state, and have in input box when loads
-
+  // pass pot height down as a prop, set this as state, and have in input box when loads IF it is a new snapshot entry
   // new snapshot button --> new plant page (take new photo, choose from library etc) --> back to individual plant page
 
   let launchCameraAsync = async () => {
@@ -33,11 +30,7 @@ function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
     if (pickerResult.cancelled === true) {
       return;
     }
-    setSelectedImage({
-      localUri: pickerResult.uri,
-      remoteUri: null,
-    });
-    imagePickerScreen();
+    imagePickerScreen(pickerResult.uri);
   };
 
   let openImagePickerAsync = async () => {
@@ -54,31 +47,19 @@ function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
 
     if (pickerResult.cancelled === true) {
       return;
-    }
-
-    if (Platform.OS === 'web') {
-      let remoteUri = await uploadToAnonymousFilesAsync(pickerResult.uri);
-      setSelectedImage({
-        localUri: pickerResult.uri,
-        remoteUri,
-      });
     } else {
-      setSelectedImage({
-        localUri: pickerResult.uri,
-        remoteUri: null,
-      });
-      imagePickerScreen();
+      imagePickerScreen(pickerResult.uri);
     }
   };
 
-  imagePickerScreen = () => {
+  let imagePickerScreen = (uri) => {
     navigation.navigate('image picker', {
       potHeight,
       plantId,
-      selectedImage: selectedImage,
-      openImagePickerAsync: openImagePickerAsync,
-      launchCameraAsync: launchCameraAsync,
-      imagePickerSelected: imagePickerSelected,
+      selectedImage: uri,
+      openImagePickerAsync,
+      launchCameraAsync,
+      imagePickerSelected,
       userId,
     });
   };
@@ -117,29 +98,10 @@ function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    width: 305,
-    height: 200,
-    marginBottom: 10,
-    resizeMode: 'contain',
-  },
-  instructions: {
-    color: '#888',
-    fontSize: 18,
-    marginHorizontal: 15,
-    marginBottom: 10,
-  },
   button: {
     backgroundColor: '#52875a',
     borderRadius: 5,
     marginBottom: 10,
-    // marginTop: 5,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '65%',
@@ -166,11 +128,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: '300',
-  },
-  thumbnail: {
-    width: 300,
-    height: 300,
-    resizeMode: 'stretch',
   },
 });
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 
-// navigation
-
 function ImagePickerScreen(props) {
   const { navigation } = props;
   const {
@@ -16,12 +14,11 @@ function ImagePickerScreen(props) {
   } = props.route.params;
 
   return (
-    // <ScrollView>
     <View style={styles.container}>
       <View style={styles.image_container}>
         <Image
           source={{
-            uri: selectedImage.localUri,
+            uri: selectedImage,
           }}
           style={styles.image}
         />
@@ -30,7 +27,7 @@ function ImagePickerScreen(props) {
         style={styles.button_next}
         onPress={() =>
           navigation.navigate('new snapshot', {
-            image: selectedImage.localUri,
+            image: selectedImage,
             pot_height: potHeight,
             plant_id: plantId,
             userId,
@@ -40,6 +37,9 @@ function ImagePickerScreen(props) {
         <Text style={styles.button_text_step_2}>use photo</Text>
       </TouchableOpacity>
 
+      {
+        // Need to include button if imagePickerSelected is false because when press 'choose another photo', tutorial button briefly appears
+      }
       {imagePickerSelected && (
         <TouchableOpacity
           style={styles.button_back}
@@ -58,57 +58,21 @@ function ImagePickerScreen(props) {
         </TouchableOpacity>
       )}
     </View>
-    // </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logo: {
-    width: 305,
-    height: 200,
-    marginBottom: 10,
-    resizeMode: 'contain',
-  },
-  instructions: {
-    color: '#888',
-    fontSize: 18,
-    marginHorizontal: 15,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: 'blue',
-    padding: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonText: {
-    fontSize: 20,
-    color: '#fff',
-  },
-  thumbnail: {
-    width: 300,
-    height: 350,
-    resizeMode: 'stretch',
   },
   image_container: {
     height: '50%',
     width: '80%',
-    // shadowOffset: { width: 1, height: 3 },
-    // shadowColor: '#355a3a',
-    // shadowOpacity: 3,
-    // elevation: 2,
     backgroundColor: '#355a3a',
     borderRadius: 10,
-    // borderBottomRightRadius: 50,
-    // borderTopLeftRadius: 50,
     marginBottom: 10,
-    // backgroundColor: 'black',
   },
   image: {
     alignSelf: 'stretch',
@@ -119,7 +83,6 @@ const styles = StyleSheet.create({
   button_next: {
     backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
     marginTop: 20,
     justifyContent: 'center',
     alignSelf: 'center',
@@ -140,10 +103,8 @@ const styles = StyleSheet.create({
     color: '#52875a',
   },
   button_back: {
-    // backgroundColor: '#52875a',
     borderRadius: 5,
     marginBottom: 20,
-    // marginTop: 25,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '65%',
