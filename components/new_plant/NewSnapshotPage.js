@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import PotHeightSVG from '../../assets/tutorials/part_2/pot_measure.svg';
-import Arrow from '../../utils/animations/Arrow';
+import ArrowLoop from '../../utils/animations/Arrow';
 import { ScrollView } from 'react-native-gesture-handler';
 
 function NewSnapshotPage(props) {
@@ -31,7 +31,7 @@ function NewSnapshotPage(props) {
               <PotHeightSVG height={330} width={210}></PotHeightSVG>
             </View>
             <View style={styles.arrow_container}>
-              <Arrow></Arrow>
+              <ArrowLoop></ArrowLoop>
             </View>
           </View>
         </View>

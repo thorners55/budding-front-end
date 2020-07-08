@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import PotHeightSVG from '../../assets/tutorials/part_2/pot_measure.svg';
-import Arrow from '../../utils/animations/Arrow';
+import ArrowLoop from '../../utils/animations/Arrow';
 
 function Step2({ navigation }) {
   return (
@@ -19,14 +19,14 @@ function Step2({ navigation }) {
             <PotHeightSVG height={330} width={210}></PotHeightSVG>
           </View>
           <View style={styles.arrow_container}>
-            <Arrow></Arrow>
+            <ArrowLoop></ArrowLoop>
           </View>
         </View>
-        <Text style={styles.tutorial_cm}>12cm</Text>
+        <Text style={styles.tutorial_cm}>e.g. 12 cm</Text>
 
         <Text style={styles.tutorial_text_2}>
-          Enter the pot height in the form provided. We will store the plant's
-          pot height for you.{'\n'}
+          Enter the pot height in cm. We will store the plant's pot height for
+          you.{'\n'}
           {'\n'}
           If you re-pot your plant, you can either change the pot's height the
           next time you measure, or you can update its height in the 'edit
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
     fontSize: 45,
     color: '#355a3a',
     textAlign: 'center',
-    textDecorationLine: 'underline',
   },
   tutorial_text: {
     textAlign: 'center',
