@@ -213,7 +213,7 @@ function MeasureFunction({ route, navigation }) {
             onPress={calculateDistance}
             style={styles.top_button_select}
           >
-            <Text style={styles.buttonText}>submit</Text>
+            <Text style={styles.button_text}>submit</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={resetMeasure} style={styles.button}>

@@ -86,7 +86,7 @@ function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('tutorial', {
-            openImagePickerAsync: openImagePickerAsync,
+            openImagePickerAsync,
           })
         }
         style={styles.button_tutorial}
