@@ -27,7 +27,6 @@ function MeasureFunction({ route, navigation }) {
   const pan = useRef(new Animated.ValueXY()).current;
   const [showCalculateButton, setShow] = useState(false);
   const [resizedImage, setImage] = useState('');
-  const [plantHeight, setPlantHeight] = useState(null);
   const [loading, isLoading] = useState(true);
 
   const name = shortid.generate();
@@ -52,32 +51,52 @@ function MeasureFunction({ route, navigation }) {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
+        // gesture has started - gestureState.d{x,y} set to 0 now (distance)
+        // this means the animation will set the base offset to the current position (where it was just before was released last time - the next gesture will start at the same place, not reset to default)
         pan.setOffset({
-          x: pan.x._value,
           y: pan.y._value,
         });
       },
-      onPanResponderMove: (evt, gestureState) => {
-        const panTest = -385;
-        return Animated.event([
-          null,
-          {
-            dy: pan.y,
-          },
-        ])(evt, gestureState);
-      },
-      onPanResponderEnd: (e, gestureState) => {
+      onPanResponderMove:
+        // called whenever user moves finger - here this is the evt
+        Animated.event([
+          null, // raw event arg ignored
+          { dy: pan.y }, // gestureState arg
+        ]),
+      // Creates a function that will automatically take the gestureState which has 2 keys on it dx and dy and put those changes on pan.x and pan.y
+
+      onPanResponderRelease: () => {
+        // user has released all touches
         pan.flattenOffset();
-      },
-      onPanResponderRelease: (e, gestureState) => {
-        pan.flattenOffset();
-        const { moveY } = gestureState;
+        // takes whatever values are in offset and add to base animated value,then reset offset to 0 - this stops the the measuring animation from jumping around
       },
     }),
   ).current;
 
+  const addMarker = () => {
+    const { _value } = pan.y;
+    if (pressCount.current === 0) {
+      pressCount.current++;
+      setBottomPotClick(_value);
+    } else if (pressCount.current === 1) {
+      pressCount.current++;
+      setTopPotClick(_value);
+    } else if (pressCount.current === 2) {
+      pressCount.current++;
+      setTopPlantClick(_value);
+      setShow(true);
+    }
+  };
+
+  const resetMeasure = () => {
+    setBottomPotClick(0);
+    setTopPotClick(0);
+    setTopPlantClick(0);
+    pressCount.current = 0;
+    setShow(false);
+  };
+
   const calculateDistance = () => {
-    // sets height
     const promise = new Promise((resolve, reject) => {
       const unit = (bottomPotClick - topPotClick) / potHeight;
       let plantHeight = (topPotClick - topPlantClick) / unit;
@@ -88,9 +107,8 @@ function MeasureFunction({ route, navigation }) {
 
   const navNextPage = () => {
     isLoading(true);
-    // if there's a plantId, send a patch request, then navigate to individual plant page
+    // if there's a plantId, send a patch request and upload snapshot photo to S3, then navigate to individual plant page
     // if not, go to new plant entry
-    // NEED TO SEND PHOTO TO S3
     if (plantId) {
       return api
         .patchPlantById(
@@ -120,7 +138,7 @@ function MeasureFunction({ route, navigation }) {
             console.log('error message: ', response.text);
           }
         })
-        .then((response) => {
+        .then(() => {
           Alert.alert('Successful', 'Snapshot added!');
           isLoading(false);
           navigation.push('garden');
@@ -141,54 +159,27 @@ function MeasureFunction({ route, navigation }) {
     }
   };
 
-  const addMarker = () => {
-    const { _value } = pan.y;
-    if (pressCount.current === 0) {
-      pressCount.current++;
-      setBottomPotClick(_value);
-    } else if (pressCount.current === 1) {
-      pressCount.current++;
-      setTopPotClick(_value);
-    } else if (pressCount.current === 2) {
-      pressCount.current++;
-      setTopPlantClick(_value);
-      setShow(true);
-    }
-  };
-
-  const resetMeasure = () => {
-    setBottomPotClick(0);
-    setTopPotClick(0);
-    setTopPlantClick(0);
-    pressCount.current = 0;
-    setShow(false);
-  };
-
-  const plantInfo = {
-    resizedImage,
-    height,
-    plantHeight: 7,
-    potHeight: 12.5,
-  };
-
   if (loading) return <LoadingGif />;
   else {
     return (
       <View style={styles.container}>
         <View style={styles.header_container}>
-          <Text style={styles.headingText}>
+          <Text style={styles.heading_text}>
             {pressCount.current === 0
               ? `Place your first marker at the bottom of the pot`
               : pressCount.current === 1
-              ? `Place your second marker at the top of the front rim of the pot`
+              ? `Place your second marker at the front rim of the pot`
               : pressCount.current === 2
               ? `Place your third marker at the top of the plant`
               : `Bloomin' marvellous! You can now hit the submit button below`}
+            {
+              // these instructions have to be as close to the same character count as possible because using flexbox - if there are more than two lines, it changes where the picture is placed on the screen, which moves the photo and means the picture's y coordinates are not consistent across measuring.
+              // could fix this by re-factoring styling to use grid instead of flex.
+            }
           </Text>
         </View>
         <Image
-          // onTouchStart={this.handleTouch}
-          style={styles.logo}
+          style={styles.plant_photo}
           source={{
             uri: resizedImage,
           }}
@@ -196,26 +187,19 @@ function MeasureFunction({ route, navigation }) {
         <Animated.View
           style={{
             marginTop: -50,
-            transform: [{ translateX: pan.x }, { translateY: pan.y }],
+            transform: [{ translateY: pan.y }],
           }}
+          // this allows the measure box to reposition, using the values of where it is on the screen (pan.y)
           {...panResponder.panHandlers}
+          // panResponder.panHandlers allows the animation to access the handlers, and thus tell it what to do when it moves
         >
           <View style={styles.oval} />
           <View style={styles.horizontal_line} />
           <View style={styles.vertical_line} />
         </Animated.View>
-        {/* <Button
-          title="view tutorial"
-          onPress={() => {
-            navigation.navigate('tutorial');
-          }}
-        /> */}
-        {
-          // image, s3 link, plant measurements, pot measurement
-        }
         {!showCalculateButton && (
           <TouchableOpacity onPress={addMarker} style={styles.top_button}>
-            <Text style={styles.buttonText}>{`add ${
+            <Text style={styles.button_text}>{`add ${
               pressCount.current === 0
                 ? 'first'
                 : pressCount.current === 1
@@ -233,7 +217,7 @@ function MeasureFunction({ route, navigation }) {
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={resetMeasure} style={styles.button}>
-          <Text style={styles.buttonText_reset}>reset</Text>
+          <Text style={styles.button_text_reset}>reset</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -241,7 +225,7 @@ function MeasureFunction({ route, navigation }) {
           }}
           style={styles.button_tutorials}
         >
-          <Text style={styles.buttonText_tutorials}>tutorials</Text>
+          <Text style={styles.button_text_tutorials}>tutorial</Text>
         </TouchableOpacity>
       </View>
     );
@@ -252,7 +236,6 @@ export default MeasureFunction;
 
 const styles = StyleSheet.create({
   container: {
-    // padding: 40,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -261,15 +244,10 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
     paddingTop: 30,
-    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  container2: {
-    width: 450,
-    height: 500,
-  },
-  headingText: {
+  heading_text: {
     textAlign: 'center',
     color: '#355a3a',
     fontSize: 25,
@@ -309,8 +287,6 @@ const styles = StyleSheet.create({
   top_button: {
     backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
-    // marginTop: 20,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '65%',
@@ -331,7 +307,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
     marginTop: 10,
     justifyContent: 'center',
     alignSelf: 'center',
@@ -339,38 +314,31 @@ const styles = StyleSheet.create({
     height: 45,
   },
   button_tutorials: {
-    // backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
-    // marginTop: 10,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '65%',
     height: 45,
   },
-  buttonText: {
+  button_text: {
     fontSize: 25,
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  buttonText_tutorials: {
+  button_text_tutorials: {
     fontSize: 25,
     color: '#355a3a',
     textAlign: 'center',
     fontWeight: '300',
   },
-  buttonText_reset: {
+  button_text_reset: {
     fontSize: 25,
     color: '#fff',
     textAlign: 'center',
     fontWeight: '300',
   },
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-  logo: {
+  plant_photo: {
     width: 270,
     height: 315,
   },
