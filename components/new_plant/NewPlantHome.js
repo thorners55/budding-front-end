@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import uploadToAnonymousFilesAsync from 'anonymous-files';
 
 function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
   const [imagePickerSelected, setPickerSelected] = React.useState(true);
@@ -84,11 +76,7 @@ function NewPlantHome({ plant_id, pot_height, navigation, userId, route }) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('tutorial', {
-            openImagePickerAsync,
-          })
-        }
+        onPress={() => navigation.navigate('tutorial')}
         style={styles.button_tutorial}
       >
         <Text style={styles.button_text}>tutorial</Text>

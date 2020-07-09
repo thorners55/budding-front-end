@@ -11,7 +11,6 @@ const Stack = createStackNavigator();
 function GardenNavigator({ userId, plant_id, from, route }) {
   let potHeight;
   let plantId;
-
   if (!userId) {
     let userId = route.params.userId;
   }

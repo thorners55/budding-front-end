@@ -1,5 +1,3 @@
-// dark green = #355a3a
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
+  Alert,
 } from 'react-native';
 import * as api from '../../api-requests/api';
 import TimeAgo from 'react-native-timeago';
@@ -26,7 +24,7 @@ import * as Font from 'expo-font';
 import LoadingGif from '../LoadingGif';
 
 function PlantPage(props) {
-  const { deletingPlant } = props.route.params;
+  // const { deletingPlant } = props.route.params;
   const { navigation } = props;
   const {
     plant_id,
@@ -56,7 +54,40 @@ function PlantPage(props) {
     });
   }, []);
 
-  let ScreenHeight = Dimensions.get('window').height;
+  const deletingPlant = (plant_name, plant_id) => {
+    isLoading(true);
+    Alert.alert(
+      `Delete ${plant_name}`,
+      `Are you sure you want to permanently delete ${plant_name}?`,
+      [
+        {
+          text: 'No, do not delete!',
+          onPress: () => {
+            console.log('deletion cancelled');
+          },
+        },
+        {
+          text: 'Yes, delete!',
+          onPress: () => {
+            api.deletePlantById(plant_id).then((response) => {
+              if (response.status === 204) {
+                Alert.alert(
+                  'Plant deleted!',
+                  `Successfully deleted ${plant_name}`,
+                );
+                navigation.navigate('garden');
+              } else {
+                Alert.alert(
+                  'Unsuccessful',
+                  `Could not delete ${plant_name} - please try again`,
+                );
+              }
+            });
+          },
+        },
+      ],
+    );
+  };
 
   return (
     <ScrollView>
