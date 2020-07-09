@@ -10,14 +10,23 @@ import Arrow from '../../assets/tutorials/part_2/arrow.svg';
 import ArrowFlipped from '../../assets/tutorials/part_2/arrow_flipped.svg';
 
 function MeasureAnimation() {
-  const startValue = useRef(new Animated.Value(57)).current;
-  const button1 = useRef(new Animated.Value(1)).current;
+  const startValue = useRef(new Animated.Value(57)).current; // starts at position 57
+  const button1 = useRef(new Animated.Value(1)).current; // starts as opaque
   const button2 = useRef(new Animated.Value(1)).current;
+
+  // measure bar stays on bottom of pot for 1 second
+  // measure bar takes 1 second to move to top of pot
+  // "first marker" moves into saying "second marker" by changing button1 opacity to 0
+  // measure bar waits one second before moving to top of plant and takes 1 second to move there
+  // button2 opacity goes from initial value of 1 to 0 - "second marker" becomes transparent and moves into saying "third marker"
+  // after 1 second, says "first marker" again by fsetting "first marker" to opaque (if don't do this will say "second marker" throughout whole animation)
+  // "second marker" to opaque again, but doesn't show (if don't do this will show "third marker" instead of second marker in next loops)
+  // measure bar goes back to bottom of plant
 
   Animated.loop(
     Animated.sequence([
       Animated.timing(startValue, {
-        toValue: 57,
+        toValue: 57, // stays in place when starts
         duration: 1000,
       }),
       Animated.timing(startValue, {
@@ -39,7 +48,7 @@ function MeasureAnimation() {
       }),
       Animated.timing(button1, {
         delay: 1000,
-        toValue: 1,
+        toValue: 1, // "
         duration: 1,
       }),
       Animated.timing(button2, {
@@ -49,16 +58,19 @@ function MeasureAnimation() {
       Animated.timing(startValue, {
         toValue: 57,
         duration: 1000,
-        opacity: 0.1,
       }),
     ]),
   ).start();
 
   return (
-    <View style={styles.container}>
+    // the view is the animated view - this is how both animations move together
+    <View>
       <Animated.View
         style={[styles.square, { transform: [{ translateY: startValue }] }]}
       >
+        {
+          //animated view containing arrows and measure bar
+        }
         <View style={styles.arrow_container}>
           <View style={{ marginRight: 15 }}>
             <ArrowFlipped height={30} width={30}></ArrowFlipped>
@@ -75,19 +87,18 @@ function MeasureAnimation() {
       </Animated.View>
       <View style={{ marginLeft: 135, marginTop: 90 }}>
         <Animated.View style={[styles.button_next_2]}>
-          <TouchableOpacity style={[styles.button_next_2]}>
-            <Text style={styles.button_text_step_2}>third marker</Text>
-          </TouchableOpacity>
+          {
+            // animated view containing the marker placement description
+            // nested animated views of "first marker" and "third marker"
+          }
+
+          <Text style={styles.button_text_step_2}>third marker</Text>
         </Animated.View>
         <Animated.View style={[styles.button_next_2, { opacity: button2 }]}>
-          <TouchableOpacity style={[styles.button_next_2]}>
-            <Text style={styles.button_text_step_2}>second marker</Text>
-          </TouchableOpacity>
+          <Text style={styles.button_text_step_2}>second marker</Text>
         </Animated.View>
         <Animated.View style={[styles.button_next, { opacity: button1 }]}>
-          <TouchableOpacity style={[styles.button_next]}>
-            <Text style={styles.button_text_step_2}>first marker</Text>
-          </TouchableOpacity>
+          <Text style={styles.button_text_step_2}>first marker</Text>
         </Animated.View>
       </View>
     </View>
@@ -97,7 +108,6 @@ function MeasureAnimation() {
 export default MeasureAnimation;
 
 const styles = StyleSheet.create({
-  container: {},
   arrow_container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -106,7 +116,7 @@ const styles = StyleSheet.create({
   },
   square: {
     height: 20,
-    width: 50,
+    width: 70,
   },
   oval: {
     zIndex: 10,

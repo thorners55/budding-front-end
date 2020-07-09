@@ -3,13 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Font from 'expo-font';
 
 function Profile({ userInfo, logOut }) {
-  useEffect(() => {
-    Font.loadAsync({
-      arciform: require('../assets/fonts/Arciform.otf'),
-      helvetica: require('../assets/fonts/HelveticaNeueLTCom-Roman.ttf'),
-    });
-  }, []);
-
   const { name, username } = userInfo;
   return (
     <View style={styles.container}>
