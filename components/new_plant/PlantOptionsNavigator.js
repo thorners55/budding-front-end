@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import NewPlantHome from './NewPlantHome';
 import MeasureFunction from './MeasureFunction';
 import NewPlantEntry from './NewPlantEntry';
-import ImagePickerScreen from './ImagePickerScreen';
 import NewSnapshotPage from './NewSnapshotPage';
 import TutorialNavigator from '../tutorial/TutorialNavigator';
 
@@ -60,18 +59,12 @@ function PlantOptionsNavigator({ userId, pot_height, route }) {
       <Stack.Screen
         name="measure plant"
         options={{ headerShown: false }}
-        name="measure plant"
         component={MeasureFunction}
       />
       <Stack.Screen
         options={{ headerShown: false }}
         name="new plant entry"
         component={NewPlantEntry}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="image picker"
-        component={ImagePickerScreen}
       />
       <Stack.Screen
         options={{ headerShown: false }}

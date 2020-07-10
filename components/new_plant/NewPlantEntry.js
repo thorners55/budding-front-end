@@ -14,7 +14,6 @@ const { options } = require('../../s3-config.js');
 const shortid = require('shortid');
 import { RNS3 } from 'react-native-s3-upload';
 import RNPickerSelect from 'react-native-picker-select';
-import * as Font from 'expo-font';
 import { StackActions } from '@react-navigation/native';
 import LoadingGif from '../LoadingGif';
 

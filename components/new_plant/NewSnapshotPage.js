@@ -12,10 +12,11 @@ import ArrowLoop from '../../utils/animations/Arrow';
 import { ScrollView } from 'react-native-gesture-handler';
 
 function NewSnapshotPage(props) {
-  const { image, plant_id, pot_height, userId } = props.route.params;
-  const [potHeight, setPotHeight] = useState(pot_height);
-  const [plantId, setPlantId] = useState(plant_id);
   const { navigation } = props;
+  const { image, plant_id, pot_height, userId } = props.route.params;
+  let plantId = plant_id;
+
+  const [potHeight, setPotHeight] = useState(pot_height);
 
   return (
     <View>
