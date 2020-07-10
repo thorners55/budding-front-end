@@ -8,8 +8,8 @@ While there are currently many apps that can identify a plant, or remind you to 
 
 This is the repository for the front-end of our app, which was built using React Native, Expo, React Navigation, and s3. Requests are made to our back-end API using Axios.
 
-Our API can be found here https://budding-back-end.herokuapp.com/api \
-Our Budding back-end repository can be found here https://github.com/budding-team/budding-back-end/
+The API can be found here https://budding-back-end.herokuapp.com/api \
+The Budding back-end repository can be found here https://github.com/thorners55/budding-back-end \
 
 ## Prerequisites
 

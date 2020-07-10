@@ -1,16 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Animated,
   View,
   StyleSheet,
-  PanResponder,
   Text,
   Image,
-  Button,
   SafeAreaView,
   TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
   Alert,
 } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
@@ -31,6 +26,8 @@ function Garden({ userId, navigation }) {
   const [plant_type, changeType] = useState(null);
 
   const isFocused = useIsFocused();
+
+  // fetches data again when the drop down sort buttons change, or using isFocused if that view is focused (if come back to garden page after navigating away - this is a way to get it to re-render when a new plant has been added)
 
   useEffect(() => {
     Font.loadAsync({
@@ -86,47 +83,6 @@ function Garden({ userId, navigation }) {
       changeOrder('asc');
       changeSort('created_at');
     }
-  };
-
-  const deletingPlant = (plant_name, plant_id) => {
-    // Asks for confirmation to delete the plant
-    // If confirm, sends request to delete, if 204 response navigates back to garden
-    // If cancel, does nothing
-    // Function is passed down into PlantPage so, once delete button is pressed, will set the garden state to 'loading' - otherwise, there are a couple of seconds where can still press on the plant before garden re-renders, which throws an error
-    isLoading(true);
-    Alert.alert(
-      `Delete ${plant_name}`,
-      `Are you sure you want to permanently delete ${plant_name}?`,
-      [
-        {
-          text: 'No, do not delete!',
-          onPress: () => {
-            console.log('deletion cancelled');
-          },
-        },
-        {
-          text: 'Yes, delete!',
-          onPress: () => {
-            api.deletePlantById(plant_id).then((response) => {
-              if (response.status === 204) {
-                Alert.alert(
-                  'Plant deleted!',
-                  `Successfully deleted ${plant_name}`,
-                );
-                navigation.navigate('garden');
-                // plant name deleted
-              } else {
-                Alert.alert(
-                  'Unsuccessful',
-                  `Could not delete ${plant_name} - please try again`,
-                );
-                // deletion unsuccessful
-              }
-            });
-          },
-        },
-      ],
-    );
   };
 
   if (loading) return <LoadingGif />;
@@ -189,6 +145,7 @@ function Garden({ userId, navigation }) {
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('plant navigator', { user_id: userId });
+                  // goes through plant navigator to get to new plant screen - have to go through navigator to be able to pass down props as it goes through a different tab navigator and thus different stack, so won't pass props
                 }}
                 style={styles.button}
               >
@@ -208,7 +165,7 @@ function Garden({ userId, navigation }) {
                     onPress={() =>
                       navigation.navigate('plant page', {
                         item,
-                        deletingPlant,
+                        //deletingPlant,
                       })
                     }
                     style={styles.image}
@@ -226,6 +183,7 @@ function Garden({ userId, navigation }) {
                       onPress={() =>
                         navigation.navigate('plant page', {
                           item,
+                          deletingPlant,
                         })
                       }
                     >
@@ -233,7 +191,7 @@ function Garden({ userId, navigation }) {
                     </TouchableOpacity>
 
                     <Text style={styles.plant_stats}>
-                      <>planted: </>
+                      <>posted: </>
                       <TimeAgo
                         time={item.created_at}
                         style={styles.plant_stats_value}
@@ -309,18 +267,11 @@ const styles = StyleSheet.create({
   plant_view: {
     marginTop: 5,
     marginBottom: 10,
-    // flexDirection: 'row',
   },
   plant_left_view: {
     marginLeft: 3,
     flex: 1,
   },
-  // plant_right_view: {
-  //   paddingRight: 5,
-  //   textAlign: 'right',
-  //   alignItems: 'center',
-  //   paddingTop: 2,
-  // },
   snapshot: {
     position: 'absolute',
     marginLeft: '85%',
@@ -346,10 +297,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: undefined,
     width: undefined,
-  },
-  logo: {
-    marginTop: 20,
-    marginBottom: 20,
   },
   button: {
     backgroundColor: '#fdbe39',
@@ -389,7 +336,6 @@ const pickerSelectStyles = StyleSheet.create({
     backgroundColor: '#52875a',
     paddingHorizontal: 20,
     paddingVertical: 7.5,
-    // paddingRight: 15, // to ensure the text is never behind the icon
   },
   sort_by_button: {
     backgroundColor: 'transparent',

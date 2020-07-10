@@ -1,15 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as Font from 'expo-font';
 
-function Profile({ navigation, userInfo, logOut }) {
-  useEffect(() => {
-    Font.loadAsync({
-      arciform: require('../assets/fonts/Arciform.otf'),
-      helvetica: require('../assets/fonts/HelveticaNeueLTCom-Roman.ttf'),
-    });
-  }, []);
-
+function Profile({ userInfo, logOut }) {
   const { name, username } = userInfo;
   return (
     <View style={styles.container}>
@@ -72,7 +65,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 10,
     width: '65%',
-    // paddingHorizontal: 80,
   },
   button_text: {
     fontSize: 20,

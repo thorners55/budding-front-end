@@ -1,27 +1,21 @@
-// import 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import PlantOptionsNavigator from './components/new_plant/PlantOptionsNavigator';
 import GardenNavigator from './components/garden/GardenNavigator';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Login from './components/Login';
 import Profile from './components/Profile';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Entypo, Foundation, AntDesign } from '@expo/vector-icons';
+import { Entypo, AntDesign } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
-// set all states to null to engage the login page
-
 function App() {
-  //console.disableYellowBox = true;
-  // const [userId, setUserId] = useState(null);
-  // const [username, setUsername] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [username, setUsername] = useState(null);
+  console.disableYellowBox = true;
+  const [userId, setUserId] = useState(1);
+  const [username, setUsername] = useState('robert_plant');
   const [name, setName] = useState(null);
-  // to undo hardcode, set state back to id null and useState ''
+  // during development, if want to skip login, hardcode a userId and relevant username
 
   const logIn = (Id, user, fullName) => {
     setUserId(Id);
@@ -40,7 +34,7 @@ function App() {
     name,
   };
 
-  // if user isn't logged in, displays login component
+  // if user isn't logged in, displays login component, passes logIn func to component so can set user info in app state
   // if user is logged in, navigates to garden page, passing userId down through garden navigator
 
   return (
@@ -51,24 +45,14 @@ function App() {
           <NavigationContainer>
             <Tab.Navigator
               screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName;
-                  // size = 40;
+                tabBarIcon: ({ color, size }) => {
                   if (route.name === 'garden') {
                     return <Entypo name="tree" size={size} color={color} />;
                   } else if (route.name === 'new plant') {
-                    return (
-                      <Entypo
-                        // style={{ marginBottom: 2 }}
-                        name={'plus'}
-                        size={size}
-                        color={color}
-                      />
-                    );
+                    return <Entypo name={'plus'} size={size} color={color} />;
                   } else if (route.name === 'profile') {
                     return <AntDesign name="user" size={size} color={color} />;
                   }
-                  // You can return any component that you like here!
                 },
               })}
               tabBarOptions={{
@@ -117,8 +101,5 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     backgroundColor: '#355a3a',
     color: 'white',
-  },
-  userName: {
-    marginTop: 50,
   },
 });

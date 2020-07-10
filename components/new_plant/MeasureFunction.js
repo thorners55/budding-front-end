@@ -6,15 +6,11 @@ import {
   PanResponder,
   Text,
   Image,
-  Button,
   TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
   Alert,
 } from 'react-native';
 
 import * as ImageManipulator from 'expo-image-manipulator';
-import { set } from 'react-native-reanimated';
 import * as api from '../../api-requests/api';
 const { options } = require('../../s3-config.js');
 const shortid = require('shortid');
@@ -31,11 +27,7 @@ function MeasureFunction({ route, navigation }) {
   const pan = useRef(new Animated.ValueXY()).current;
   const [showCalculateButton, setShow] = useState(false);
   const [resizedImage, setImage] = useState('');
-  const [plantHeight, setPlantHeight] = useState(null);
   const [loading, isLoading] = useState(true);
-
-  console.log(userId, '<--- top of measure func');
-  console.log(plantId, '<--- top of meaure func plantId');
 
   const name = shortid.generate();
   const file = {
@@ -59,107 +51,27 @@ function MeasureFunction({ route, navigation }) {
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderGrant: () => {
+        // gesture has started - gestureState.d{x,y} set to 0 now (distance)
+        // this means the animation will set the base offset to the current position (where it was just before was released last time - the next gesture will start at the same place, not reset to default)
         pan.setOffset({
-          x: pan.x._value,
           y: pan.y._value,
         });
       },
-      onPanResponderMove: (evt, gestureState) => {
-        const panTest = -385;
-        return Animated.event([
-          null,
-          {
-            dy: pan.y,
-          },
-        ])(evt, gestureState);
-      },
-      onPanResponderEnd: (e, gestureState) => {
+      onPanResponderMove:
+        // called whenever user moves finger - here this is the evt
+        Animated.event([
+          null, // raw event arg ignored
+          { dy: pan.y }, // gestureState arg
+        ]),
+      // Creates a function that will automatically take the gestureState which has 2 keys on it dx and dy and put those changes on pan.x and pan.y
+
+      onPanResponderRelease: () => {
+        // user has released all touches
         pan.flattenOffset();
-      },
-      onPanResponderRelease: (e, gestureState) => {
-        pan.flattenOffset();
-        const { moveY } = gestureState;
+        // takes whatever values are in offset and add to base animated value,then reset offset to 0 - this stops the the measuring animation from jumping around
       },
     }),
   ).current;
-
-  const calculateDistance = () => {
-    // sets height
-    const promise = new Promise((resolve, reject) => {
-      const unit = (bottomPotClick - topPotClick) / potHeight;
-      let plantHeight = (topPotClick - topPlantClick) / unit;
-      height.current = plantHeight.toFixed(1);
-      console.log(bottomPotClick, topPotClick, topPlantClick);
-      // plantHeight = plantHeight * (1 + 0.15)
-
-      // console.log(bottomPotClick, topPotClick, topPlantClick);
-      console.log(plantHeight + 'CM  ----PLANT HEIGHT');
-    }).then(navNextPage());
-  };
-
-  const navNextPage = () => {
-    isLoading(true);
-    console.log(plantId, '<--- measure func!');
-    // if there's a plantId, send a patch request, then navigate to individual plant page
-    // if not, go to new plant entry
-    // NEED TO SEND PHOTO TO S3
-    if (plantId) {
-      return api
-        .patchPlantById(
-          plantId,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          potHeight,
-        )
-        .then((response) => {
-          console.log(response, '<--- after patch request');
-        })
-        .then(() => {
-          return RNS3.put(file, options);
-        })
-        .then((response) => {
-          console.log(plantId, resizedImage, height.current);
-          // if response is good, do post snapshot
-          // if not, alert an error
-          if (response.status === 201) {
-            console.log('body: ', response.body);
-            const { location } = response.body.postResponse;
-            console.log(location);
-            return api.postSnapshot(plantId, location, height.current);
-          } else {
-            // stays on measure function page if there is an error and gives an alert
-            Alert.alert('Error', 'Problem uploading photo. Please try again.');
-            isLoading(false);
-            console.log('error message: ', response.text);
-          }
-        })
-        .then((response) => {
-          console.log(response, '<--- after post request');
-          Alert.alert('Successful', 'Snapshot added!');
-          isLoading(false);
-          navigation.push('garden');
-        })
-        .catch((err) => {
-          console.log(err);
-          Alert.alert('Error', `${err}`);
-          isLoading(false);
-        });
-    } else {
-      isLoading(false);
-      console.log(userId, '<--- inside measure func');
-      navigation.navigate('new plant entry', {
-        resizedImage,
-        potHeight,
-        plantHeight: height.current,
-        userId,
-      });
-    }
-  };
 
   const addMarker = () => {
     const { _value } = pan.y;
@@ -184,11 +96,67 @@ function MeasureFunction({ route, navigation }) {
     setShow(false);
   };
 
-  const plantInfo = {
-    resizedImage,
-    height,
-    plantHeight: 7,
-    potHeight: 12.5,
+  const calculateDistance = () => {
+    const promise = new Promise((resolve, reject) => {
+      const unit = (bottomPotClick - topPotClick) / potHeight;
+      let plantHeight = (topPotClick - topPlantClick) / unit;
+      height.current = plantHeight.toFixed(1);
+      console.log(plantHeight + 'CM  ----PLANT HEIGHT');
+    }).then(navNextPage());
+  };
+
+  const navNextPage = () => {
+    isLoading(true);
+    // if there's a plantId, send a patch request and upload snapshot photo to S3, then navigate to individual plant page
+    // if not, go to new plant entry
+    if (plantId) {
+      return api
+        .patchPlantById(
+          plantId,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          potHeight,
+        )
+        .then(() => {
+          return RNS3.put(file, options);
+        })
+        .then((response) => {
+          // if response is good, do post snapshot
+          // if not, alert an error
+          if (response.status === 201) {
+            const { location } = response.body.postResponse;
+            return api.postSnapshot(plantId, location, height.current);
+          } else {
+            // stays on measure function page if there is an error and gives an alert
+            Alert.alert('Error', 'Problem uploading photo. Please try again.');
+            isLoading(false);
+            console.log('error message: ', response.text);
+          }
+        })
+        .then(() => {
+          Alert.alert('Successful', 'Snapshot added!');
+          isLoading(false);
+          navigation.navigate('garden');
+        })
+        .catch((err) => {
+          console.log(err);
+          Alert.alert('Error', `${err}`);
+          isLoading(false);
+        });
+    } else {
+      isLoading(false);
+      navigation.navigate('new plant entry', {
+        resizedImage,
+        potHeight,
+        plantHeight: height.current,
+        userId,
+      });
+    }
   };
 
   if (loading) return <LoadingGif />;
@@ -196,19 +164,22 @@ function MeasureFunction({ route, navigation }) {
     return (
       <View style={styles.container}>
         <View style={styles.header_container}>
-          <Text style={styles.headingText}>
+          <Text style={styles.heading_text}>
             {pressCount.current === 0
               ? `Place your first marker at the bottom of the pot`
               : pressCount.current === 1
-              ? `Place your second marker at the top of the front rim of the pot`
+              ? `Place your second marker at the front rim of the pot`
               : pressCount.current === 2
               ? `Place your third marker at the top of the plant`
               : `Bloomin' marvellous! You can now hit the submit button below`}
+            {
+              // these instructions have to be as close to the same character count as possible because using flexbox - if there are more than two lines, it changes where the picture is placed on the screen, which moves the photo and means the picture's y coordinates are not consistent across measuring.
+              // could fix this by re-factoring styling to use grid instead of flex.
+            }
           </Text>
         </View>
         <Image
-          // onTouchStart={this.handleTouch}
-          style={styles.logo}
+          style={styles.plant_photo}
           source={{
             uri: resizedImage,
           }}
@@ -216,26 +187,19 @@ function MeasureFunction({ route, navigation }) {
         <Animated.View
           style={{
             marginTop: -50,
-            transform: [{ translateX: pan.x }, { translateY: pan.y }],
+            transform: [{ translateY: pan.y }],
           }}
+          // this allows the measure box to reposition, using the values of where it is on the screen (pan.y)
           {...panResponder.panHandlers}
+          // panResponder.panHandlers allows the animation to access the handlers, and thus tell it what to do when it moves
         >
           <View style={styles.oval} />
           <View style={styles.horizontal_line} />
           <View style={styles.vertical_line} />
         </Animated.View>
-        {/* <Button
-          title="view tutorial"
-          onPress={() => {
-            navigation.navigate('tutorial');
-          }}
-        /> */}
-        {
-          // image, s3 link, plant measurements, pot measurement
-        }
         {!showCalculateButton && (
           <TouchableOpacity onPress={addMarker} style={styles.top_button}>
-            <Text style={styles.buttonText}>{`add ${
+            <Text style={styles.button_text}>{`add ${
               pressCount.current === 0
                 ? 'first'
                 : pressCount.current === 1
@@ -249,11 +213,11 @@ function MeasureFunction({ route, navigation }) {
             onPress={calculateDistance}
             style={styles.top_button_select}
           >
-            <Text style={styles.buttonText}>submit</Text>
+            <Text style={styles.button_text}>submit</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={resetMeasure} style={styles.button}>
-          <Text style={styles.buttonText_reset}>reset</Text>
+          <Text style={styles.button_text_reset}>reset</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -261,7 +225,7 @@ function MeasureFunction({ route, navigation }) {
           }}
           style={styles.button_tutorials}
         >
-          <Text style={styles.buttonText_tutorials}>tutorials</Text>
+          <Text style={styles.button_text_tutorials}>tutorial</Text>
         </TouchableOpacity>
       </View>
     );
@@ -272,7 +236,6 @@ export default MeasureFunction;
 
 const styles = StyleSheet.create({
   container: {
-    // padding: 40,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -281,15 +244,10 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
     paddingTop: 30,
-    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  container2: {
-    width: 450,
-    height: 500,
-  },
-  headingText: {
+  heading_text: {
     textAlign: 'center',
     color: '#355a3a',
     fontSize: 25,
@@ -329,8 +287,6 @@ const styles = StyleSheet.create({
   top_button: {
     backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
-    // marginTop: 20,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '65%',
@@ -351,7 +307,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
     marginTop: 10,
     justifyContent: 'center',
     alignSelf: 'center',
@@ -359,38 +314,31 @@ const styles = StyleSheet.create({
     height: 45,
   },
   button_tutorials: {
-    // backgroundColor: '#52875a',
     borderRadius: 5,
-    // marginBottom: 15,
-    // marginTop: 10,
     justifyContent: 'center',
     alignSelf: 'center',
     width: '65%',
     height: 45,
   },
-  buttonText: {
+  button_text: {
     fontSize: 25,
     color: '#fff',
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  buttonText_tutorials: {
+  button_text_tutorials: {
     fontSize: 25,
     color: '#355a3a',
     textAlign: 'center',
     fontWeight: '300',
   },
-  buttonText_reset: {
+  button_text_reset: {
     fontSize: 25,
     color: '#fff',
     textAlign: 'center',
     fontWeight: '300',
   },
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-  logo: {
+  plant_photo: {
     width: 270,
     height: 315,
   },
