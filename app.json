@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "budding-front-end",
-    "slug": "budding-front-end",
+    "name": "budding-app",
+    "slug": "budding-app",
+    "description": "Budding can measure a plant’s height and track its growth using a mobile phone and the measurement of the real life pot height",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "githubUrl": "https://github.com/thorners55/budding-front-end",
     "splash": {
       "image": "./assets/budding_text.png",
       "resizeMode": "contain",
