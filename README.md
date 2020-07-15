@@ -11,6 +11,12 @@ This is the repository for the front-end of our app, which was built using React
 The API can be found here https://budding-back-end.herokuapp.com/api \
 The Budding back-end repository can be found here https://github.com/thorners55/budding-back-end \
 
+#### To use the live app on mobile, download the Expo app and run https://exp.host/@thorners55/budding-front-end
+
+#### To use the live app on a browser, go to https://exp.host/@thorners55/budding-front-end and select 'Open project in browser'
+
+#### The Northcoder's Graduation Showcase Presentation for Budding can be found here https://www.youtube.com/watch?v=llKXad2gF8c&t=2s
+
 ## Prerequisites
 
 To run the app, you will need either:
@@ -54,7 +60,7 @@ To publish your app, you can run:
 
 `expo publish`
 
-which will prompt you to setup an account with Expo to publish your project to the expo host.
+which will prompt you to setup an account with Expo to publish your project to the Expo host.
 
 To export static files of the app for hosting on a web server, you can run:
 

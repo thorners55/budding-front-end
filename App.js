@@ -11,11 +11,11 @@ import { Entypo, AntDesign } from '@expo/vector-icons';
 const Tab = createBottomTabNavigator();
 
 function App() {
-  console.disableYellowBox = true;
-  const [userId, setUserId] = useState(1);
-  const [username, setUsername] = useState('robert_plant');
+  const [userId, setUserId] = useState();
+  const [username, setUsername] = useState();
   const [name, setName] = useState(null);
-  // during development, if want to skip login, hardcode a userId and relevant username
+  // to log in straight away and not go through login page,
+  // set userId state to 1 and username to robert_plant
 
   const logIn = (Id, user, fullName) => {
     setUserId(Id);
