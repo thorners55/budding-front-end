@@ -1,5 +1,11 @@
 # Budding App 🌱
 
+**To use the live app on mobile, download the Expo app and run https://exp.host/@thorners55/budding-app**
+
+**To use the live app on a browser, go to https://exp.host/@thorners55/budding-app and select 'Open project in browser'**
+
+**The Northcoder's Graduation Showcase Presentation for Budding can be found here: https://www.youtube.com/watch?v=llKXad2gF8c&t=2s**
+
 The Budding app was made by Stephanie Thornley, Zach Pinfold, Joao Mak and Richard Bacon for the final group project during the Northcoders Software Developer Bootcamp course.
 
 Budding can measure a plant’s height and track its growth using a mobile phone and the measurement of the real life pot height. The app was inspired by wanting an efficient and easy way to keep track of our plants’ progress.
@@ -9,13 +15,7 @@ While there are currently many apps that can identify a plant, or remind you to 
 This is the repository for the front-end of our app, which was built using React Native, Expo, React Navigation, and s3. Requests are made to our back-end API using Axios.
 
 The API can be found here https://budding-back-end.herokuapp.com/api \
-The Budding back-end repository can be found here https://github.com/thorners55/budding-back-end \
-
-#### To use the live app on mobile, download the Expo app and run https://exp.host/@thorners55/budding-app
-
-#### To use the live app on a browser, go to https://exp.host/@thorners55/budding-app and select 'Open project in browser'
-
-#### The Northcoder's Graduation Showcase Presentation for Budding can be found here https://www.youtube.com/watch?v=llKXad2gF8c&t=2s
+The Budding back-end repository can be found here https://github.com/thorners55/budding-back-end
 
 ## Prerequisites
 

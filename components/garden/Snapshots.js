@@ -77,10 +77,10 @@ function Snapshots(props) {
                   <View style={styles.plant_info_view}>
                     <LineChart
                       data={{
-                        labels: allDays,
+                        labels: allDays.reverse(),
                         datasets: [
                           {
-                            data: allHeights,
+                            data: allHeights.reverse(),
                           },
                         ],
                       }}
