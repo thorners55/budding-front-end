@@ -32,6 +32,22 @@ Instructions for how to use emulators with Expo can be found in Expo's documenta
 https://docs.expo.io/workflow/android-studio-emulator/ \
 https://docs.expo.io/workflow/ios-simulator/
 
+You will also need your own AWS S3 bucket to upload your photos to. 
+Save your S3 configuration as an object in a file called s3-config.js in the root file as follows:
+
+```javascript
+const options = {
+  keyPrefix: "example",
+  bucket: "example",
+  region: "example",
+  accessKey: "example",
+  secretKey: "example",
+  successActionStatus: 201,
+};
+
+module.exports = { options };
+````
+
 ## Installation
 
 To get started with this app, install dependencies with:
